@@ -47,6 +47,9 @@ erc:
   script:
       - mkdir test-erc-build
       - python -m kicad-automation.eeschema.schematic run_erc *.sch test-erc-build       
+  artifacts:
+      paths:
+          - test-erc-build
   tags:
     - docker
 
@@ -56,6 +59,9 @@ drc:
   script:
       - mkdir test-drc-build
       - python -m kicad-automation.pcbnew_automation.run_drc *.kicad_pcb test-drc-build       
+  artifacts:
+      paths:
+          - test-drc-build
   tags:
     - docker
 
