@@ -1,0 +1,22 @@
+---
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - - "@semantic-release/release-notes-generator"
+    - linkReferences: false
+      linkCompare: false
+  - - "@semantic-release/exec"
+    - verifyReleaseCmd: "echo ${nextRelease.version} > VERSION.txt"
+  - - "@semantic-release/changelog"
+    - changelogFile: CHANGELOG.md
+  - - "@semantic-release/git"
+    - assets:
+        - 'CHANGELOG.md'
+        - 'VERSION.txt'
+      message: "chore(release): ${nextRelease.version} [only cd]\n\n${nextRelease.notes}"
+  - "@semantic-release/gitlab"
+
+branches:
+  - "master"
+  - "+([0-9])?(.{+([0-9]),x}).x"
+  - name: "alpha"
+    prerelease: "alpha"
