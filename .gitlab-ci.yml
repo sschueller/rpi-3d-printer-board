@@ -46,7 +46,7 @@ erc:
   image: productize/kicad-automation-scripts
   script:
       - mkdir test-erc-build
-      - python -m kicad-automation.eeschema.schematic run_erc *.sch test-erc-build       
+      - python -m kicad-automation.eeschema.schematic run_erc ./*.sch ./test-erc-build       
   artifacts:
       paths:
           - test-erc-build
@@ -58,7 +58,7 @@ drc:
   image: productize/kicad-automation-scripts
   script:
       - mkdir test-drc-build
-      - python -m kicad-automation.pcbnew_automation.run_drc *.kicad_pcb test-drc-build       
+      - python -m kicad-automation.pcbnew_automation.run_drc ./*.kicad_pcb ./test-drc-build       
   artifacts:
       paths:
           - test-drc-build
@@ -71,8 +71,8 @@ build:
   image: productize/kicad-automation-scripts
   script:
       - mkdir build
-      - python -m kicad-automation.pcbnew_automation.plot *.kicad_pcb build
-      - python -m kicad-automation.pcbnew_automation.plot -f pdf *.kicad_pcb build
+      - python -m kicad-automation.pcbnew_automation.plot ./*.kicad_pcb ./build
+      - python -m kicad-automation.pcbnew_automation.plot -f pdf ./*.kicad_pcb ./build
       - ls build/
       
   artifacts:
