@@ -53,6 +53,7 @@ drc:
 
 
 build:
+    stage: build
     image: productize/kicad-automation-scripts
     script:
         - mkdir build
@@ -65,8 +66,8 @@ build:
             - build
 
 release:
+  stage: publish
   image: node:14
-  stage: release
   only:
     refs:
     - master
