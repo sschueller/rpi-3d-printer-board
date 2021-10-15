@@ -22,6 +22,8 @@ fetch-semantic-version:
   artifacts:
     paths:
     - VERSION.txt
+  tags:
+    - docker
 
 generate-non-semantic-version:
   stage: fetch-version
@@ -36,34 +38,42 @@ generate-non-semantic-version:
   artifacts:
     paths:
     - VERSION.txt
+  tags:
+    - docker
 
 erc:
-    stage: testing
-    image: productize/kicad-automation-scripts
-    script:
-        - mkdir test-erc-build
-        - python -m kicad-automation.eeschema.schematic run_erc ./*.sch ./test-erc-build       
+  stage: testing
+  image: productize/kicad-automation-scripts
+  script:
+      - mkdir test-erc-build
+      - python -m kicad-automation.eeschema.schematic run_erc ./*.sch ./test-erc-build       
+  tags:
+    - docker
 
 drc:
-    stage: testing
-    image: productize/kicad-automation-scripts
-    script:
-        - mkdir test.drc-build
-        - python -m kicad-automation.pcbnew_automation.run_drc ./*.kicad_pcb ./test-drc-build       
+  stage: testing
+  image: productize/kicad-automation-scripts
+  script:
+      - mkdir test.drc-build
+      - python -m kicad-automation.pcbnew_automation.run_drc ./*.kicad_pcb ./test-drc-build       
+  tags:
+    - docker
 
 
 build:
-    stage: build
-    image: productize/kicad-automation-scripts
-    script:
-        - mkdir build
-        - python -m kicad-automation.pcbnew_automation.plot ./*.kicad_pcb ./build
-        - python -m kicad-automation.pcbnew_automation.plot -f pdf ./*.kicad_pcb ./build
-        - ls build/
-        
-    artifacts:
-        paths:
-            - build
+  stage: build
+  image: productize/kicad-automation-scripts
+  script:
+      - mkdir build
+      - python -m kicad-automation.pcbnew_automation.plot ./*.kicad_pcb ./build
+      - python -m kicad-automation.pcbnew_automation.plot -f pdf ./*.kicad_pcb ./build
+      - ls build/
+      
+  artifacts:
+      paths:
+          - build
+  tags:
+    - docker
 
 release:
   stage: publish
@@ -79,3 +89,5 @@ release:
   script:
     - npm install @semantic-release/gitlab
     - npx semantic-release
+  tags:
+    - docker
