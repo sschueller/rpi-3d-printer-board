@@ -44,7 +44,7 @@ erc:
   image: setsoft/kicad_auto:latest
   stage: testing
   script:
-    - "[ -f *.sch ] && kibot -d Fabrication -s update_xml,run_drc -i"
+    - "[ -f *.sch ] && kibot -c .kibot.yml -d Fabrication -s update_xml,run_drc -i"
   rules:
     - changes:
       - "**.sch"
@@ -61,7 +61,7 @@ drc:
   image: setsoft/kicad_auto:latest
   stage: testing
   script:
-    - "[ -f *.kicad_pcb ] && kibot -d Fabrication -s update_xml,run_erc -i"
+    - "[ -f *.kicad_pcb ] && kibot -c .kibot.yml -d Fabrication -s update_xml,run_erc -i"
   rules:
     - changes:
       - "**.kicad_pcb"
@@ -78,7 +78,7 @@ sch_outputs:
   image: setsoft/kicad_auto:latest
   stage: gen_fab
   script:
-    - "[ -f *.sch ] && kibot -d Fabrication -s run_drc,run_erc print_sch"
+    - "[ -f *.sch ] && kibot -c .kibot.yml -d Fabrication -s run_drc,run_erc print_sch"
   rules:
     - changes:
       - "**.sch"
@@ -95,7 +95,7 @@ pcb_outputs:
   image: setsoft/kicad_auto:latest
   stage: gen_fab
   script:
-    - "[ -f *.kicad_pcb ] && kibot -d Fabrication -s all print_front gerbers"
+    - "[ -f *.kicad_pcb ] && kibot -c .kibot.yml -d Fabrication -s all print_front gerbers"
   rules:
     - changes:
       - "**.kicad_pcb"
