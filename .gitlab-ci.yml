@@ -1,39 +1,8 @@
 stages:
-  - environment
   - fetch-version
   - testing
-  - build
+  - gen_fab
   - publish
-
-.updateContainerJob:
-  image: docker:stable
-  stage: environment
-  services:
-    - docker:dind
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG ci/.
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  tags:
-    - shell
-
-updateContainer:
-  extends: .updateContainerJob
-  only:
-    changes:
-      - Dockerfile
-
-ensureContainer:
-  extends: .updateContainerJob
-  allow_failure: true
-  before_script:
-    - "mkdir -p ~/.docker && echo '{\"experimental\": \"enabled\"}' > ~/.docker/config.json"
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    # Skip update container `script` if the container already exists
-    # via https://gitlab.com/gitlab-org/gitlab-ce/issues/26866#note_97609397 -> https://stackoverflow.com/a/52077071/796832
-    - docker manifest inspect $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG > /dev/null && exit || true
-
 
 # https://levelup.gitconnected.com/semantic-versioning-and-release-automation-on-gitlab-9ba16af0c21
 fetch-semantic-version:
@@ -71,59 +40,81 @@ generate-non-semantic-version:
   tags:
     - docker
 
-# erc:
-#   stage: testing
-#   image: productize/kicad-automation-scripts
-#   script:
-#       - mkdir test-erc-build
-#       - python -m kicad-automation.eeschema.schematic run_erc ./*.sch ./test-erc-build       
-#   artifacts:
-#       paths:
-#           - test-erc-build
-#   tags:
-#     - docker
-
-# drc:
-#   stage: testing
-#   image: productize/kicad-automation-scripts
-#   script:
-#       - mkdir test-drc-build
-#       - python -m kicad-automation.pcbnew_automation.run_drc ./*.kicad_pcb ./test-drc-build       
-#   artifacts:
-#       paths:
-#           - test-drc-build
-#   tags:
-#     - docker
-
-
-build:
-  stage: build
-  image: productize/kicad-automation-scripts
+erc:
+  image: setsoft/kicad_auto:latest
+  stage: testing
   script:
-      - mkdir build
-      - python -m kicad-automation.pcbnew_automation.plot ./*.kicad_pcb ./build
-      - python -m kicad-automation.pcbnew_automation.plot -f pdf ./*.kicad_pcb ./build
-      - ls build/
-      
+    - "[ -f *.sch ] && kibot -d Fabrication -s update_xml,run_drc -i"
+  rules:
+    - changes:
+      - "**.sch"
+      - ".gitlab-ci.yml"
+      when: always
   artifacts:
-      paths:
-          - build
-  tags:
-    - docker
+    when: always
+    paths:
+      - Fabrication/
 
-release:
-  stage: publish
-  image: node:14
-  only:
-    refs:
-    - master
-    - alpha
-    # This matches maintenance branches
-    - /^(([0-9]+)\.)?([0-9]+)\.x/
-    # This matches pre-releases
-    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ 
+drc:
+  image: setsoft/kicad_auto:latest
+  stage: testing
   script:
-    - npm install @semantic-release/gitlab
-    - npx semantic-release
-  tags:
-    - docker
+    - "[ -f *.kicad_pcb ] && kibot -d Fabrication -s update_xml,run_erc -i"
+  rules:
+    - changes:
+      - "**.kicad_pcb"
+      - ".gitlab-ci.yml"
+      when: always
+  artifacts:
+    when: always
+    paths:
+      - Fabrication/
+
+
+sch_outputs:
+  image: setsoft/kicad_auto:latest
+  stage: gen_fab
+  script:
+    - "[ -f *.sch ] && kibot -d Fabrication -s run_drc,run_erc print_sch"
+  rules:
+    - changes:
+      - "**.sch"
+      - ".gitlab-ci.yml"
+      when: on_success
+  artifacts:
+    when: always
+    paths:
+      - Fabrication/
+
+pcb_outputs:
+  image: setsoft/kicad_auto:latest
+  stage: gen_fab
+  script:
+    - "[ -f *.kicad_pcb ] && kibot -d Fabrication -s all print_front gerbers"
+  rules:
+    - changes:
+      - "**.kicad_pcb"
+      - ".gitlab-ci.yml"
+      when: on_success
+  artifacts:
+    when: always
+    paths:
+      - Fabrication/
+
+
+# release:
+#   stage: publish
+#   image: node:14
+#   only:
+#     refs:
+#     - master
+#     - alpha
+#     # This matches maintenance branches
+#     - /^(([0-9]+)\.)?([0-9]+)\.x/
+#     # This matches pre-releases
+#     - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ 
+#   script:
+#     - npm install @semantic-release/gitlab
+#     - npx semantic-release
+#   tags:
+#     - docker
