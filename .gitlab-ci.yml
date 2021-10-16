@@ -54,6 +54,8 @@ erc:
     when: always
     paths:
       - Fabrication/
+  tags:
+    - docker
 
 drc:
   image: setsoft/kicad_auto:latest
@@ -69,7 +71,8 @@ drc:
     when: always
     paths:
       - Fabrication/
-
+  tags:
+    - docker
 
 sch_outputs:
   image: setsoft/kicad_auto:latest
@@ -85,6 +88,8 @@ sch_outputs:
     when: always
     paths:
       - Fabrication/
+  tags:
+    - docker
 
 pcb_outputs:
   image: setsoft/kicad_auto:latest
