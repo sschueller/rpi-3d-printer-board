@@ -119,7 +119,7 @@ pcb_outputs:
 #     # This matches pre-releases
 #     - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ 
 #   script:
-#     - npm install @semantic-release/gitlab
+#     - npm install @semantic-release/gitlab @semantic-release/exec @semantic-release/changelog @semantic-release/git -D
 #     - npx semantic-release
 #   tags:
 #     - docker
