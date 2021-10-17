@@ -1,0 +1,11 @@
+# Gerber and drill files for JLCPCB, without stencil
+# URL: https://jlcpcb.com/
+kibot:
+  version: 1
+
+preflight:
+  run_erc: true
+  update_xml: true
+  run_drc: true
+  check_zone_fills: true
+  ignore_unconnected: false
