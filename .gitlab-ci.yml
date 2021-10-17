@@ -4,95 +4,41 @@ stages:
   - gen_fab
   - publish
 
-# # https://levelup.gitconnected.com/semantic-versioning-and-release-automation-on-gitlab-9ba16af0c21
-# fetch-semantic-version:
-#   # Requires Node >= 10.13 version
-#   image: node:14
-#   stage: fetch-version
-#   only:
-#     refs:
-#     - master
-#     - alpha
-#     - /^(([0-9]+)\.)?([0-9]+)\.x/ # This matches maintenance branches
-#     - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ # This matches pre-releases
-#   script:
-#     - npm install @semantic-release/gitlab @semantic-release/exec @semantic-release/changelog @semantic-release/git -D
-#     - npx semantic-release --generate-notes false --dry-run
-#   artifacts:
-#     paths:
-#     - VERSION.txt
-#   tags:
-#     - docker
+# https://levelup.gitconnected.com/semantic-versioning-and-release-automation-on-gitlab-9ba16af0c21
+fetch-semantic-version:
+  # Requires Node >= 10.13 version
+  image: node:14
+  stage: fetch-version
+  only:
+    refs:
+    - master
+    - alpha
+    - /^(([0-9]+)\.)?([0-9]+)\.x/ # This matches maintenance branches
+    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ # This matches pre-releases
+  script:
+    - npm install @semantic-release/gitlab @semantic-release/exec @semantic-release/changelog @semantic-release/git -D
+    - npx semantic-release --generate-notes false --dry-run
+  artifacts:
+    paths:
+    - VERSION.txt
+  tags:
+    - docker
 
-# generate-non-semantic-version:
-#   stage: fetch-version
-#   except:
-#     refs:
-#     - master
-#     - alpha
-#     - /^(([0-9]+)\.)?([0-9]+)\.x/ # This matches maintenance branches
-#     - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ # This matches pre-releases
-#   script:
-#     - echo build-$CI_PIPELINE_ID > VERSION.txt
-#   artifacts:
-#     paths:
-#     - VERSION.txt
-#   tags:
-#     - docker
-
-# erc:
-#   image: setsoft/kicad_auto:latest
-#   stage: testing
-#   script:
-#     - "[ -f *.sch ] && kibot -c .kibot.yaml -d Fabrication -s update_xml,run_drc -i"
-#     - ls -la
-#   rules:
-#     - changes:
-#       - "**.sch"
-#       - ".gitlab-ci.yml"
-#       when: always
-#   artifacts:
-#     when: always
-#     paths:
-#       - Fabrication/
-#   tags:
-#     - docker
-
-# drc:
-#   image: setsoft/kicad_auto:latest
-#   stage: testing
-#   script:
-#     - "[ -f *.kicad_pcb ] && kibot -c .kibot.yaml -d Fabrication -s update_xml,run_erc -i"
-#   rules:
-#     - changes:
-#       - "**.kicad_pcb"
-#       - ".gitlab-ci.yml"
-#       when: always
-#   artifacts:
-#     when: always
-#     paths:
-#       - Fabrication/
-#   tags:
-#     - docker
-
-
-
-# sch_outputs:
-#   image: setsoft/kicad_auto:latest
-#   stage: gen_fab
-#   script:
-#     - "[ -f *.sch ] && kibot -c .kibot.yaml -d Fabrication -s run_drc,run_erc print_sch"
-#   rules:
-#     - changes:
-#       - "**.sch"
-#       - ".gitlab-ci.yml"
-#       when: on_success
-#   artifacts:
-#     when: always
-#     paths:
-#       - Fabrication/
-#   tags:
-#     - docker
+generate-non-semantic-version:
+  stage: fetch-version
+  except:
+    refs:
+    - master
+    - alpha
+    - /^(([0-9]+)\.)?([0-9]+)\.x/ # This matches maintenance branches
+    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ # This matches pre-releases
+  script:
+    - echo build-$CI_PIPELINE_ID > VERSION.txt
+  artifacts:
+    paths:
+    - VERSION.txt
+  tags:
+    - docker
 
 tests:
   image: setsoft/kicad_auto:latest
@@ -106,7 +52,6 @@ tests:
       when: on_success
   tags:
     - docker
-
 
 pcb_outputs:
   image: setsoft/kicad_auto:latest
@@ -125,19 +70,19 @@ pcb_outputs:
   tags:
     - docker
 
-# release:
-#   stage: publish
-#   image: node:14
-#   only:
-#     refs:
-#     - master
-#     - alpha
-#     # This matches maintenance branches
-#     - /^(([0-9]+)\.)?([0-9]+)\.x/
-#     # This matches pre-releases
-#     - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ 
-#   script:
-#     - npm install @semantic-release/gitlab @semantic-release/exec @semantic-release/changelog @semantic-release/git -D
-#     - npx semantic-release
-#   tags:
-#     - docker
+release:
+  stage: publish
+  image: node:14
+  only:
+    refs:
+    - master
+    - alpha
+    # This matches maintenance branches
+    - /^(([0-9]+)\.)?([0-9]+)\.x/
+    # This matches pre-releases
+    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/ 
+  script:
+    - npm install @semantic-release/gitlab @semantic-release/exec @semantic-release/changelog @semantic-release/git -D
+    - npx semantic-release
+  tags:
+    - docker
