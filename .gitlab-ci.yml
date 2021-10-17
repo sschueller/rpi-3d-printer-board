@@ -107,6 +107,7 @@ tests:
   tags:
     - docker
 
+
 pcb_outputs:
   image: setsoft/kicad_auto:latest
   stage: gen_fab
