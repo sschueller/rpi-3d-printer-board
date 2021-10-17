@@ -45,6 +45,7 @@ erc:
   stage: testing
   script:
     - "[ -f *.sch ] && kibot -c .kibot.yaml -d ./Fabrication -s update_xml,run_drc -i"
+    - ls -la ./Fabrication
   rules:
     - changes:
       - "**.sch"
