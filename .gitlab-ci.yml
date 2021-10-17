@@ -75,6 +75,8 @@ stages:
 #   tags:
 #     - docker
 
+
+
 # sch_outputs:
 #   image: setsoft/kicad_auto:latest
 #   stage: gen_fab
