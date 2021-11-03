@@ -296,7 +296,7 @@ $EndComp
 Wire Wire Line
 	1200 4325 1475 4325
 $Comp
-L ali-stuff:LM2596BuckConverterModule M1
+L fanboard3-rescue:LM2596BuckConverterModule-ali-stuff M1
 U 1 1 6031FD7D
 P 2925 4525
 F 0 "M1" H 3050 4590 50  0000 C CNN
@@ -432,7 +432,7 @@ F 3 "" H 3325 1000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ali-stuff:LM2596BuckConverterModule M2
+L fanboard3-rescue:LM2596BuckConverterModule-ali-stuff M2
 U 1 1 6032064A
 P 2925 3625
 F 0 "M2" H 3050 3690 50  0000 C CNN
