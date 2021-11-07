@@ -26,15 +26,15 @@ This simple RPI board fits ontop of an RPI3+ and can supply it with power withou
 | M2A  | LM2596 | tuned to 12V (use 4 x 2.54m 2-pin header to connect)  |
 | U1  | SN74HCT245 | 20-SSOP (0,209", 5,30mm Width) |
 | K1  | G6K-2F-Y (5V) | |
-| D1  | 1206 LED | |
-| R1  | 1206 2.2k | |
-| R2  | 1206 2.2k | |
-| R3  | 1206 2.2k | |
-| R4  | 1206 2.2k | |
-| R5  | 1206 150 Ohm | |
-| R6  | 1206 0 Ohm (bridge) | |
+| D1  | 1206 SMD LED | |
+| R1  | 1206 SMD 2.2k | |
+| R2  | 1206 SMD 2.2k | |
+| R3  | 1206 SMD 2.2k | |
+| R4  | 1206 SMD 2.2k | |
+| R5  | 1206 SMD 150 Ohm | |
+| R6  | 1206 SMD 0 Ohm (bridge) | |
 | P1  | RPI 2.54m 2x20-pin female header | |
-| J1  | 2.54mm 2-pin header | |
+| J1  | 2-poin Phoenix Contact screw terminal 5.08mm | |
 | J2  | 2.54mm 2x8-pin header | |
 | J3  | Phoenix Contact 10x3.81mm Vertical | |
 | J6  | 2510 2.54mm KF2510 3+1P | |
@@ -42,3 +42,4 @@ This simple RPI board fits ontop of an RPI3+ and can supply it with power withou
 | J8  | 2510 2.54mm KF2510 3+1P | |
 | J9  | 2510 2.54mm KF2510 3+1P | |
 | J11 | USB Type A Female 4Pin Socket Connector For PCB - through hole | |
+| J12 | 2.54mm 2-pin header | |
