@@ -2,6 +2,10 @@
 
 This simple RPI board fits ontop of an RPI3+ and can supply it with power without requiring any external extras. It provides a few general features used in 3d printing and simplifies the wiring required. To control the fans, LEDs, relays etc. the https://plugins.octoprint.org/plugins/enclosure/ is recommended 
 
+<img src="https://raw.githubusercontent.com/sschueller/rpi-3d-printer-board/master/photo1.jpg" width="300">
+
+<img src="https://raw.githubusercontent.com/sschueller/rpi-3d-printer-board/master/photo2.jpg" width="300">
+
 ## Features
 - 12V - 28V In
 - 12V Out
